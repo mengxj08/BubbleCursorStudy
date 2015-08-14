@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title>Bubble Cursor User Testing</title>
+	<script type="text/javascript" src="processing.js"></script>
+	<script type="text/javascript">
+		function getip(json){
+			window.ip = json.ip;
+		}
+		function submit() {
+			stats = Processing.getInstanceById('canvas').getStats();
+			$('#entry_18').val(ip);
+			$('#entry_13').val(stats[0]);
+			$('#entry_14').val(stats[1]);
+			$('#entry_15').val(stats[2]);
+			$('#entry_16').val(stats[3]);
+			$('#entry_17').val(stats[4]);
+			$('#entry_19').val(stats[5]);
+			$('#entry_20').val(stats[6]);
+			$('#ss-form :submit').click();
+		}
+	</script>
+	<script type="text/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+	<canvas id="canvas" datasrc="example_pde/example_pde.pde" width="200" height="200"></canvas>
+<iframe style="display:none" name="ifr" id="ifr"></iframe>
+</body>
+</html>
+

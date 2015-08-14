@@ -1,1 +1,2 @@
-# BubbleCursorStudy
+Running platform for NEXP
+===============

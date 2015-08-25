@@ -4,13 +4,10 @@ void bindJavascript(JavaScript js) {
   javascript = js;
 }
 JavaScript javascript;
-
-PFont f;                          
-
-int numpoints; //number of points
-int width = 1715;
+                     
+int numpoints = 10; //number of points
+int width = 1800;
 int height = 750;
-int padding = 100;
 int clicks = 5;
 int currmin = 0; //tracks index of nearest target
 int secondmin = 0; //tracks index of second-nearest target
@@ -20,12 +17,10 @@ int numMisses = 0;
 int runningTotalTime = 0;
 int numClicks = 0;
 
-int rows;
-int cols;
-
-int Xrows;
-int Ycols;
+float A;
+float EW;
 float radius;
+float unit = 1.3;
 
 //floats and float arrays to handle position, movement, timing
 float x, y;              //old cursor position
@@ -39,11 +34,7 @@ float cursorDiameter;
 float startTime=0;
 float timeElapsed=0;
 
-int trialIndex = 0;
-int[] trialIndices = {0,1,2,3,4,5,6,7,8,9};
-
 int[] movementTimes = new int[clicks-1];
-
 
 //booleans to track program mode and bubble behavior
 boolean morphed; //tracks if the bubble needs to be morphed
@@ -52,23 +43,19 @@ boolean testMode; // activates the target-timing test
 boolean infoOn=true; //displays useful information, deactivate with "i"
 boolean collisionsFound; //used only in initializing points to prevent overlap
 boolean init = true; //initial setup for layout of bubbles
-boolean bubbleCursor = true; 
-
-void keyPressed() {
-}
+boolean bubbleCursor; 
+boolean passDataToJS = true;
 
 void startTest(){
   startTime = millis();
   int oldTarget = currTarget;
   while (currTarget == oldTarget){
-    currTarget = floor(random(0,numpoints));  
+    currTarget = abs(oldTarget - 1);  
   }
 }
 
-
 void mousePressed(){
-  numClicks++;
-
+ numClicks++;
  if (testMode)
  {
    if (currmin==currTarget)
@@ -90,50 +77,43 @@ void mousePressed(){
  }
 }
 
-void initializePoints(float x,float y,float d) { // x cols, y rows, diameter d
-  int posx, posy;
-  int distx = (width - 2*padding)/((int)x-1);
-  int disty = (height - 2*padding)/((int)y-1);
-
-  numpoints = (int)x * (int)y;
+void initializePoints(float x,float y,float d) { // x amplitude, y effective width, d
   pointsX = new float[numpoints];
   pointsY = new float[numpoints];
   diameter = new float[numpoints];
-  rows = (int)y;
-  cols = (int)x;
+  
   containDistances = new float[numpoints];
   intersectDistances = new float[numpoints];
   distances = new float[numpoints];
 
+  pointsX[0] = width/2 - x/2;
+  pointsY[0] = height/2;
+  pointsX[1] = width/2 + x/2;
+  pointsY[1] = height/2;
+  
+  float padding = (y + d)*2 + 1;
+  pointsX[2] = pointsX[0];
+  pointsY[2] = height/2 - padding;
+  pointsX[3] = pointsX[0];
+  pointsY[3] = height/2 + padding;
+  
+  pointsX[4] = pointsX[0] - padding;
+  pointsY[4] = pointsY[0];
+  pointsX[5] = pointsX[0] + padding;
+  pointsY[5] = pointsY[0];
+  
+  pointsX[6] = pointsX[1];
+  pointsY[6] = height/2 - padding;
+  pointsX[7] = pointsX[1];
+  pointsY[7] = height/2 + padding;
+  
+  pointsX[8] = pointsX[1] - padding;
+  pointsY[8] = pointsY[1];
+  pointsX[9] = pointsX[1] + padding;
+  pointsY[9] = pointsY[1];
 
-  posx = padding;
-  for (int i=0; i<x; i++) {
-    posy = padding;
-    for (int j=0; j<y; j++) {
-      pointsX[i*(int)y+j]= posx;
-      pointsY[i*(int)y+j]= posy;
-      diameter[i*(int)y+j]= d;
-      posy += disty;
-    }
-    posx += distx;
-  }
-}
-
-void selectTrial() {
-  // for all trials the information will not be displayed to the user
-  infoOn = false;
-  testMode = true;
-
-  if(trialIndex > 9){
-
-  } else {
-    trials(trialIndices[trialIndex]);
-    trialIndex++;
-    numClicks = 0;
-    numHits = 0;
-    numMisses = 0;
-    startTest();
-  }
+  for(int i = 0; i < numpoints; i++)
+     diameter[i] = d;
 }
 
 void decideTrial()
@@ -141,93 +121,12 @@ void decideTrial()
     // for all trials the information will not be displayed to the user
   infoOn = false;
   testMode = true;
-  
-  padding = 50;
   regularCursor = false;
-
   numClicks = 0;
   numHits = 0;
   numMisses = 0;
-  initializePoints(Xrows,Ycols,radius);
+  initializePoints(A,EW,radius);
   startTest();
-}
-void trials (int temp) {
-switch(temp){  
-  
-// Trial one is cursor off
-case 0:
-  regularCursor = false;
-  padding = 100;
-  initializePoints(5,5,20);
-  break;
-
-// Trial two is cursor on
-case 1:
-  regularCursor = false;
-  padding = 50;
-  initializePoints(8,8,20);
-  break;
-
-// Trial three is cursor off large distance
-case 2:
-  regularCursor = false;
-  padding = 50;
-  initializePoints(5,5,20);
-  break;
-
-// Trial four is cursor off small distance
-case 3:
-  regularCursor = false;
-  padding = 200;
-  initializePoints(5,5,20);
-  break;
-
-// Trial five is cursor on large distance
-case 4:
-  regularCursor = false;
-  padding = 50;
-  initializePoints(5,5,20);
-  break;
-
-// Trial six is cursor on small distance
-case 5: 
-  regularCursor = false;
-  padding = 200;
-  initializePoints(5,5,20);
-  break;
-
-// Trial seven is cursor off small diameter
-case 6:
-  regularCursor = false;
-  padding = 100;
-  initializePoints(5,5,15);
-  break;
-
-// Trial eight is cursor off large diameter
-case 7:
-  regularCursor = false;
-  padding = 100;
-  initializePoints(5,5,30);
-  break;
-
-// Trial nine is cursor on small diameter
-case 8:
-  regularCursor = false;
-  padding = 100;
-  initializePoints(5,5,15);
-  break;
-
-// Trial ten is cursor on large diameter
-case 9:
-  regularCursor = false;
-  padding = 100;
-  initializePoints(5,5,30);
-  break;
-
-default:
-  println("Trials: No matched in SWITCH");
-  break;
-}
 }
 
 void setup() 
@@ -235,49 +134,58 @@ void setup()
   size(width, height); 
   smooth();
   noStroke();
-  //f = loadFont("HelveticaBold");
-  //textFont(f,13);
-  //trialIndices = shuffle(trialIndices); 
-  //selectTrial();
-  //decideTrial();
-
 }
 void draw() 
 { 
   if(init)
   {
-    if(javascript != null)
-    {
-      radius = javascript.ID3;
-      switch(javascript.ID2)
-      {
-        case 25:
-          Xrows = Ycols = 5;
-          break;
-        case 36:
-          Xrows = Ycols = 6;
-          break;
-        case 64:
-          Xrows = Ycols = 8;
-          break;
-        default:
-          println("ID2: No matched in SWITCH");
-          break;
-      }
-      //println(javascript.ID1);
-      if(javascript.ID1 == "Bubble")
-        bubbleCursor = true;
-      else
-        bubbleCursor = false;
+//    if(javascript != null)
+//    {
+      //radius = javascript.ID3;
 
+//      switch(javascript.ID2)
+//      {
+//        case 25:
+//          Xrows = Ycols = 5;
+//          break;
+//        case 36:
+//          Xrows = Ycols = 6;
+//          break;
+//        case 64:
+//          Xrows = Ycols = 8;
+//          break;
+//        default:
+//          println("ID2: No matched in SWITCH");
+//          break;
+//      }
+
+//      if(javascript.ID1 == "Bubble")
+//        bubbleCursor = true;
+//      else
+//        bubbleCursor = false;
+      
+      bubbleCursor = true;
       init = false;
+      
+      A = 768 * unit;
+      EW = 96 * unit;
+      radius = 24 * unit;
       decideTrial();
-    }
+//    }
    }
    else if(bubbleCursor)//This is for the Bubble Cursor
    {
   if(numHits == clicks){
     currTarget = numpoints + 1;
+    background( 51 );
+    fill(0, 102, 153);
+    textSize(50);
+    text("Please click the \"Next task\" buttion...", width/2 - 350, height/2);
+    if(passDataToJS){
+      passDataToJS = false;
+      javascript.passDataToJS(runningTotalTime,numMisses);
+    }
+    return;
   }
 
   background( 51 );
@@ -357,6 +265,15 @@ void draw()
  {
     if(numHits == clicks){
     currTarget = numpoints + 1;
+    background( 51 );
+    fill(0, 102, 153);
+    textSize(50);
+    text("Please click the \"Next task\" buttion...", width/2 - 350, height/2);
+    if(passDataToJS){
+      passDataToJS = false;
+      javascript.passDataToJS(runningTotalTime,numMisses);
+    }
+    return;
   }
 
   background( 51 );
@@ -403,7 +320,7 @@ void draw()
  }
  else
  {
-   Println("No match in bubbleCursor");
+   println("No match in bubbleCursor");
  }
 }
 

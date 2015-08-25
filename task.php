@@ -74,6 +74,10 @@ Retrieve the data name
 
 $json = json_decode(file_get_contents("design/Arrangement.json"), true);
 $Autojson = $json["children"][$taskNum]["children"][$block]["children"][$condition]["name"];
+$pieces = explode(",", $Autojson);
+$ID1 = explode("(", $pieces[0])[1];
+$ID2 = $pieces[1];
+$ID3 = explode(")", $pieces[2])[0];
 
 session_start();
 $session_name = "recordedData";
@@ -97,36 +101,59 @@ if(!isset($_SESSION[$session_betweenIV])) {
 
 <link rel="stylesheet" href="css/general.css" />
 <script type="text/javaScript" src="js/count_time.js"></script>
+<script type="text/javascript" src="js/processing.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
+    var bound = false;
+
+    function bindJavascript() {
+        var pjs = Processing.getInstanceById('example_pde');
+        if(pjs!=null) {
+          pjs.bindJavascript(this);
+          bound = true; 
+      	}
+        if(!bound) setTimeout(bindJavascript, 250);
+      }
+    bindJavascript();
+
+    var ID1 = "<?php echo trim($ID1) ?>";
+    var ID2 = <?php echo trim($ID2) ?>;
+    var ID3 = <?php echo trim($ID3) ?>;
+	var taskTime;
+	var numMisses;
+    var passDataToJS = function (totaltime,totalmiss){
+    	taskTime = totaltime;
+    	numMisses = totalmiss;
+    	//console.log(totaltime);
+    }
 	function change()
 	{
 		stop_timer();
-		var taskTime = Math.floor(secs/1000);
-		jump("mask.php",taskTime);
+		//var taskTime = Math.floor(secs/1000);
+		jump("mask.php",taskTime,numMisses);
 	}
-	function jump(next_page, time)
+	function jump(next_page, totaltime,totalmiss)
 	{
-		location.href = next_page+"?taskTime="+time;
+		location.href = next_page+"?taskTime="+totaltime+"?taskMiss="+totalmiss;
 	}
 	//monitor the space key press event, and stop the timer;
-	$(document).ready(function(){
-		$(window).keypress(function(e){
-			//alert(e.which);
-			//alert(e.keyboard);
-			if(e.which == 32)
-			{
-				stop_timer();
-				var taskTime = Math.floor(secs/1000);
-				//write the target tuple to the log file
+	// $(document).ready(function(){
+	// 	$(window).keypress(function(e){
+	// 		//alert(e.which);
+	// 		//alert(e.keyboard);
+	// 		if(e.which == 32)
+	// 		{
+	// 			stop_timer();
+	// 			var taskTime = Math.floor(secs/1000);
+	// 			//write the target tuple to the log file
 			
-				//write the spent time on this page	to the log file
+	// 			//write the spent time on this page	to the log file
 				 
-				//jump to the mask page	  
-				jump("mask.php", taskTime);
-			}
-		});
-	});
+	// 			//jump to the mask page	  
+	// 			jump("mask.php", taskTime);
+	// 		}
+	// 	});
+	// });
 </script>
 </head>
 <body> 
@@ -157,6 +184,7 @@ if(!isset($_SESSION[$session_betweenIV])) {
     </div>
 </div>
 <div id="Root">
+<canvas id="example_pde" data-processing-sources="example_pde/example_pde.pde"></canvas>
 </div>
 </body>
 </html>

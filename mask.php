@@ -6,7 +6,15 @@ if(!isset($_GET['taskTime'])){
     exit;
 }
 
-$taskTime = $_GET['taskTime'];
+$taskTime = $_GET['taskMiss'];
+
+if(!isset($_GET['taskMiss'])){
+    $message = "No taskMiss passed";
+    header("Location: task.php?message=".$message);
+    exit;
+}
+
+$taskMiss = $_GET['taskMiss'];
 
 
 if (!isset($_COOKIE["user"])){
@@ -87,9 +95,9 @@ if(!isset($_SESSION[$session_name])) {
 }
 else{
     $_SESSION[$session_name][$block]["children"][$condition]["children"][$trial]["time"] = $taskTime;
+    $_SESSION[$session_name][$block]["children"][$condition]["children"][$trial]["taskMissNum"] = $taskMiss;
 }
 //
-
 
 $trial ++;
 $CurrentTrial ++;
@@ -136,9 +144,9 @@ setcookie("CurrentTrial", $CurrentTrial, time()+(3600*3));
     $(document).ready(function(){
     	//show_image();
 
-		var name = prompt("Any request or problem to the participant?", "null");
-		if(name != "null")
-			jump("task.php");
+		// var name = prompt("Any request or problem to the participant?", "null");
+		// if(name != "null")
+	   jump("task.php");
 
     });	
 </script> 

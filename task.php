@@ -77,7 +77,8 @@ $Autojson = $json["children"][$taskNum]["children"][$block]["children"][$conditi
 $pieces = explode(",", $Autojson);
 $ID1 = explode("(", $pieces[0])[1];
 $ID2 = $pieces[1];
-$ID3 = explode(")", $pieces[2])[0];
+$ID3 = $pieces[2];
+$ID4 = explode(")", $pieces[3])[0];
 
 session_start();
 $session_name = "recordedData";

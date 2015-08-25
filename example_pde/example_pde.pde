@@ -139,37 +139,17 @@ void draw()
 { 
   if(init)
   {
-//    if(javascript != null)
-//    {
-      //radius = javascript.ID3;
-
-//      switch(javascript.ID2)
-//      {
-//        case 25:
-//          Xrows = Ycols = 5;
-//          break;
-//        case 36:
-//          Xrows = Ycols = 6;
-//          break;
-//        case 64:
-//          Xrows = Ycols = 8;
-//          break;
-//        default:
-//          println("ID2: No matched in SWITCH");
-//          break;
-//      }
-
-//      if(javascript.ID1 == "Bubble")
-//        bubbleCursor = true;
-//      else
-//        bubbleCursor = false;
-      
-      bubbleCursor = true;
+    if(javascript != null)
+    {
       init = false;
-      
-      A = 768 * unit;
-      EW = 96 * unit;
-      radius = 24 * unit;
+      if(javascript.ID1 == "Bubble")
+        bubbleCursor = true;
+      else
+        bubbleCursor = false;
+            
+      A = javascript.ID2 * unit;
+      radius = javascript.ID3 * unit;
+      EW = javascript.ID4 * unit;
       decideTrial();
 //    }
    }

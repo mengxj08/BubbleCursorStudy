@@ -77,7 +77,7 @@ if(!isset($_SESSION[$session_name]) && !isset($_SESSION[$session_subject]) && !i
 				}
 				$tmp['TrialNo'] = $trial["name"];
 				$tmp['Time'] = $trial["time"];
-
+				$tmp['taskMissNum'] = $trial["taskMissNum"];
 				array_push($resultArray, $tmp);
 			}
 		}

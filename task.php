@@ -109,7 +109,7 @@ if(!isset($_SESSION[$session_betweenIV])) {
 
     function bindJavascript() {
         var pjs = Processing.getInstanceById('example_pde');
-        if(pjs!=null) {
+        if(pjs != null) {
           pjs.bindJavascript(this);
           bound = true; 
       	}
@@ -120,6 +120,7 @@ if(!isset($_SESSION[$session_betweenIV])) {
     var ID1 = "<?php echo trim($ID1) ?>";
     var ID2 = <?php echo trim($ID2) ?>;
     var ID3 = <?php echo trim($ID3) ?>;
+    var ID4 = <?php echo trim($ID4) ?>;
 	var taskTime;
 	var numMisses;
     var passDataToJS = function (totaltime,totalmiss){
@@ -129,13 +130,16 @@ if(!isset($_SESSION[$session_betweenIV])) {
     }
 	function change()
 	{
-		stop_timer();
 		//var taskTime = Math.floor(secs/1000);
-		jump("mask.php",taskTime,numMisses);
+        if(taskTime!=null && numMisses!=null){
+            stop_timer();
+            jump("mask.php",taskTime,numMisses);
+        }
+		
 	}
 	function jump(next_page, totaltime,totalmiss)
 	{
-		location.href = next_page+"?taskTime="+totaltime+"?taskMiss="+totalmiss;
+		location.href = next_page+"?taskTime="+totaltime+"&taskMiss="+totalmiss;
 	}
 	//monitor the space key press event, and stop the timer;
 	// $(document).ready(function(){

@@ -5,13 +5,13 @@ void bindJavascript(JavaScript js) {
 }
 JavaScript javascript;
                      
-int numpoints = 10; //number of points
+int numpoints; //number of points
 int width = 1800;
 int height = 750;
 int clicks = 5;
-int currmin = 0; //tracks index of nearest target
-int secondmin = 0; //tracks index of second-nearest target
-int currTarget = 0; //tracks index of target to click in test mode
+int currmin; //tracks index of nearest target
+int secondmin; //tracks index of second-nearest target
+int currTarget; //tracks index of target to click in test mode
 int numHits = 0;
 int numMisses = 0;
 int runningTotalTime = 0;
@@ -33,7 +33,7 @@ float[] distances;
 float cursorDiameter;
 float startTime=0;
 float timeElapsed=0;
-
+float padding;
 int[] movementTimes = new int[clicks-1];
 
 //booleans to track program mode and bubble behavior
@@ -50,7 +50,17 @@ void startTest(){
   startTime = millis();
   int oldTarget = currTarget;
   while (currTarget == oldTarget){
-    currTarget = abs(oldTarget - 1);  
+    currTarget = abs(oldTarget - 1);
+    if(numpoints == 9){
+      if(currTarget == 0){
+        pointsX[8] = pointsX[0] + padding;
+        pointsY[8] = pointsY[0];
+      }
+      else{
+        pointsX[8] = pointsX[1] - padding;
+        pointsY[8] = pointsY[1];
+      }
+    }
   }
 }
 
@@ -78,10 +88,10 @@ void mousePressed(){
 }
 
 void initializePoints(float x,float y,float d) { // x amplitude, y effective width, d
+  currTarget = int(random(2));
   pointsX = new float[numpoints];
   pointsY = new float[numpoints];
   diameter = new float[numpoints];
-  
   containDistances = new float[numpoints];
   intersectDistances = new float[numpoints];
   distances = new float[numpoints];
@@ -91,26 +101,39 @@ void initializePoints(float x,float y,float d) { // x amplitude, y effective wid
   pointsX[1] = width/2 + x/2;
   pointsY[1] = height/2;
   
-  float padding = (y + d)*2 + 1;
+  padding = y * 2;
   pointsX[2] = pointsX[0];
   pointsY[2] = height/2 - padding;
   pointsX[3] = pointsX[0];
   pointsY[3] = height/2 + padding;
-  
   pointsX[4] = pointsX[0] - padding;
   pointsY[4] = pointsY[0];
-  pointsX[5] = pointsX[0] + padding;
-  pointsY[5] = pointsY[0];
   
+  pointsX[5] = pointsX[1];
+  pointsY[5] = height/2 - padding;
   pointsX[6] = pointsX[1];
-  pointsY[6] = height/2 - padding;
-  pointsX[7] = pointsX[1];
-  pointsY[7] = height/2 + padding;
+  pointsY[6] = height/2 + padding;
+  pointsX[7] = pointsX[1] + padding;
+  pointsY[7] = pointsY[1];  
+
+  if(numpoints == 10){
+    pointsX[8] = pointsX[1] - padding;
+    pointsY[8] = pointsY[1];
   
-  pointsX[8] = pointsX[1] - padding;
-  pointsY[8] = pointsY[1];
-  pointsX[9] = pointsX[1] + padding;
-  pointsY[9] = pointsY[1];
+    pointsX[9] = pointsX[0] + padding;
+    pointsY[9] = pointsY[0];
+  }
+  else if(numpoints == 9){
+    if(currTarget == 0){
+      pointsX[8] = pointsX[0] + padding;
+      pointsY[8] = pointsY[0];
+    }
+    else{
+      pointsX[8] = pointsX[1] - padding;
+      pointsY[8] = pointsY[1];
+    }
+  }
+  else{}
 
   for(int i = 0; i < numpoints; i++)
      diameter[i] = d;
@@ -146,13 +169,23 @@ void draw()
         bubbleCursor = true;
       else
         bubbleCursor = false;
-            
+      
+      if(javascript.ID2 == 192 && javascript.ID4 == 96){
+        numpoints = 8;
+      }
+      else if(javascript.ID2 == 192 && javascript.ID4 == 64){
+        numpoints = 9;
+      }
+      else{
+        numpoints = 10;
+      }
+      
       A = javascript.ID2 * unit;
       radius = javascript.ID3 * unit;
       EW = javascript.ID4 * unit;
       decideTrial();
-//    }
    }
+  }
    else if(bubbleCursor)//This is for the Bubble Cursor
    {
   if(numHits == clicks){

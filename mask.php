@@ -6,7 +6,7 @@ if(!isset($_GET['taskTime'])){
     exit;
 }
 
-$taskTime = $_GET['taskMiss'];
+$taskTime = $_GET['taskTime'];
 
 if(!isset($_GET['taskMiss'])){
     $message = "No taskMiss passed";
@@ -146,7 +146,8 @@ setcookie("CurrentTrial", $CurrentTrial, time()+(3600*3));
 
 		// var name = prompt("Any request or problem to the participant?", "null");
 		// if(name != "null")
-	   jump("task.php");
+        alert("Test the data result");
+	    jump("task.php");
 
     });	
 </script> 

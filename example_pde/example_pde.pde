@@ -70,11 +70,10 @@ void mousePressed(){
  {
    if (currmin==currTarget)
    {
-     timeElapsed = millis()-startTime;
-     runningTotalTime += timeElapsed;
-     
+     timeElapsed = millis()-startTime;  
      if(numHits > 0){
        movementTimes[numHits-1] = (int)timeElapsed;
+       runningTotalTime += timeElapsed;
      }
      numHits++;
      startTest();

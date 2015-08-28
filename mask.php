@@ -146,7 +146,7 @@ setcookie("CurrentTrial", $CurrentTrial, time()+(3600*3));
 
 		// var name = prompt("Any request or problem to the participant?", "null");
 		// if(name != "null")
-        alert("Test the data result");
+        //alert("Test the data result");
 	    jump("task.php");
 
     });	

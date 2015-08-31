@@ -19,7 +19,7 @@ int numClicks = 0;
 
 float A;
 float EW;
-float radius;
+float W;
 float unit = 1.3;
 
 //floats and float arrays to handle position, movement, timing
@@ -68,6 +68,7 @@ void mousePressed(){
  numClicks++;
  if (testMode)
  {
+//  println("MouseX:"+(mouseX-8)+"  MouseY:"+(mouseY-8));
    if (currmin==currTarget)
    {
      timeElapsed = millis()-startTime;  
@@ -76,6 +77,13 @@ void mousePressed(){
        runningTotalTime += timeElapsed;
      }
      numHits++;
+//     println("------Target:"+currmin);
+//     println("PointX:"+pointsX[currmin]);
+//     println("PointY:"+pointsY[currmin]);
+//     println("MouseX:"+mouseX);
+//     println("MouseY:"+mouseY);
+//     println("dist:"+dist(pointsX[currmin],pointsY[currmin],mouseX,mouseY));
+     
      startTest();
      //println(numHits);
    }
@@ -147,7 +155,7 @@ void decideTrial()
   numClicks = 0;
   numHits = 0;
   numMisses = 0;
-  initializePoints(A,EW,radius);
+  initializePoints(A,EW,W);
   startTest();
 }
 
@@ -180,10 +188,17 @@ void draw()
       }
       
       A = javascript.ID2 * unit;
-      radius = javascript.ID3 * unit;
+      W = javascript.ID3 * unit;
       EW = javascript.ID4 * unit;
       decideTrial();
    }
+//      init = false;
+//      numpoints = 10;
+//      bubbleCursor = false;
+//      A = 768 * unit;
+//      W = 24 * unit;
+//      EW = 96 * unit;
+//      decideTrial();
   }
    else if(bubbleCursor)//This is for the Bubble Cursor
    {
@@ -216,8 +231,10 @@ void draw()
     y += dy;
   }
   */
-  x = mouseX;
-  y = mouseY;
+  x = mouseX - 8;
+  y = mouseY - 8;
+  ellipseMode(CENTER);
+  
   morphed=false; //true iff we need a morphed cursor bubble
   currmin=0; 
   secondmin=0;
@@ -233,7 +250,6 @@ void draw()
     //find the nearest neighbor
     if ((intersectDistances[i]< intersectDistances[currmin]))
     {
-
       currmin=i;
     }
   }
@@ -293,32 +309,32 @@ void draw()
   }
 
   background( 51 );
-  /*
-  cursorX = mouseX;  
   
-  //here we follow the strategy on processing.org's tutorial for tracking mouse movement
-  float dx = cursorX - x; //change in xposition
-  if(abs(dx) > 1) { 
-    x += dx;               
-  }
+//  cursorX = mouseX;  
+//  
+//  //here we follow the strategy on processing.org's tutorial for tracking mouse movement
+//  float dx = cursorX - x; //change in xposition
+//  if(abs(dx) > 1) { 
+//    x += dx;               
+//  }
+//  
+//  cursorY = mouseY;
+//  float dy = cursorY - y; //change in yposition
+//  if(abs(dy) > 1) {
+//    y += dy;
+//  }
   
-  cursorY = mouseY;
-  float dy = cursorY - y; //change in yposition
-  if(abs(dy) > 1) {
-    y += dy;
-  }
-  */
-
-  x = mouseX;
-  y = mouseY;
-  currmin=0; 
-
+  x = mouseX - 8;
+  y = mouseY - 8;
+  currmin = -1; 
+  ellipseMode(CENTER);
   //compute distances to center
   for (int i=0; i<pointsX.length; i++)
   {
-    float distanceToBubbleCenter = dist(x,y,pointsX[i],pointsY[i]); //distance to centers
+    float distanceToBubbleCenter = dist(x,y,pointsX[i],pointsY[i]); 
+    //distance to centers THIS IS A BUG FOR PROCESSINGJS. I have to modify the distance like it.
     //find the current bubble that pointer is in
-    if (distanceToBubbleCenter <= diameter[i])
+    if (distanceToBubbleCenter <= diameter[i] / 2)
     {
       currmin=i;
       break;

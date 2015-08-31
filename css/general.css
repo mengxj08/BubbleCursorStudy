@@ -8,9 +8,10 @@ body, html{
     position: relative;
 }
 
-#Root {
-   width: 100%;
+canvas {
+/*   width: 100%;
    position: relative;
+   padding-left: 10px;*/
 }
 
 #Header {

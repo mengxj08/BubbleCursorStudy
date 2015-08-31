@@ -102,7 +102,7 @@ if(!isset($_SESSION[$session_betweenIV])) {
 
 <link rel="stylesheet" href="css/general.css" />
 <script type="text/javaScript" src="js/count_time.js"></script>
-<script type="text/javascript" src="js/processing.js"></script>
+<script type="text/javascript" src="js/processing.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
     var bound = false;
@@ -188,9 +188,7 @@ if(!isset($_SESSION[$session_betweenIV])) {
     	</center>
     </div>
 </div>
-<div id="Root">
 <canvas id="example_pde" data-processing-sources="example_pde/example_pde.pde"></canvas>
-</div>
 </body>
 </html>
 

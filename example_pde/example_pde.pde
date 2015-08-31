@@ -201,6 +201,7 @@ void draw()
   }
 
   background( 51 );
+  /*
   cursorX = mouseX;  
   
   //here we follow the strategy on processing.org's tutorial for tracking mouse movement
@@ -214,6 +215,9 @@ void draw()
   if(abs(dy) > 1) {
     y += dy;
   }
+  */
+  x = mouseX;
+  y = mouseY;
   morphed=false; //true iff we need a morphed cursor bubble
   currmin=0; 
   secondmin=0;
@@ -289,6 +293,7 @@ void draw()
   }
 
   background( 51 );
+  /*
   cursorX = mouseX;  
   
   //here we follow the strategy on processing.org's tutorial for tracking mouse movement
@@ -302,6 +307,10 @@ void draw()
   if(abs(dy) > 1) {
     y += dy;
   }
+  */
+
+  x = mouseX;
+  y = mouseY;
   currmin=0; 
 
   //compute distances to center
